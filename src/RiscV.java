@@ -8,22 +8,11 @@ public class RiscV {
 
 	static int pc;
 	static int reg[] = new int[32];
-
+	static ArrayList<Integer> progr=new ArrayList<>();
 	
 	public static void main(String[] args) throws IOException {
-
 		System.out.println("Hello RISC-V World!");
-
-		
-		ArrayList<Integer> progr=new ArrayList<>();
-        //Reading a binary file
-        DataInputStream binfile = new DataInputStream(new FileInputStream("C:/Java_workspace/addlarge.bin"));
-        while(binfile.available() > 0) {
-            int value = binfile.readInt();
-            value = Integer.reverseBytes(value);
-            progr.add(value);
-        }
-        
+		readBinFile("C:/Users/Jakob/Desktop/addlarge.bin");
 		pc = 0;
 
 		for (;;) {
@@ -143,8 +132,16 @@ public class RiscV {
 				break;
 			}
 		}
-		binfile.close();
 		System.out.println("Program exit");
 	}
 
+	public static void readBinFile(String filedestination) throws IOException{
+		DataInputStream binfile = new DataInputStream(new FileInputStream(filedestination));
+		while(binfile.available() > 0) {
+			int instruction = binfile.readInt();
+			instruction = Integer.reverseBytes(instruction);
+			progr.add(instruction);
+		}
+		binfile.close();
+	}
 }
