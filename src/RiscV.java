@@ -6,12 +6,12 @@ public class RiscV {
     static boolean count;
     static int pc;
     static int reg[] = new int[32];
-    static byte mem[] = new byte[0xffff];
+    static byte mem[] = new byte[0xffffff];
     static ArrayList<Integer> progr=new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello RISC-V World!");
-        readBinFile("C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\test_jal.bin");
+        readBinFile("C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\loop.bin");
         pc = 0;
 
         for (;;) {
@@ -43,10 +43,10 @@ public class RiscV {
                     break;
 
                 case 0x6f:    //JAL
-                    imm = (((instr >> 22) & 0x3ff) << 1) + (((instr >> 21) & 0x1) << 11)
+                    imm = (((instr >> 21) & 0x3ff) << 1) + (((instr >> 20) & 0x1) << 11)
                             + (((instr >> 12) & 0xff) << 12) + (((instr >> 31) & 0x1) << 20) ;
                     if ((instr >>> 31) == 1) {
-                        imm |= 0xffe00000;
+                        imm |= 0xfff00000;
                     }
                     reg[rd] = pc + 4;
                     pc += imm;
