@@ -11,7 +11,7 @@ public class RiscV {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello RISC-V World!");
-        readBinFile("C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\test_lhu.bin");
+        readBinFile("C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\test_jal.bin");
         pc = 0;
 
         for (;;) {
@@ -43,7 +43,6 @@ public class RiscV {
                     break;
 
                 case 0x6f:    //JAL
-
                     imm = (((instr >> 22) & 0x3ff) << 1) + (((instr >> 21) & 0x1) << 11)
                             + (((instr >> 12) & 0xff) << 12) + (((instr >> 31) & 0x1) << 20) ;
                     if ((instr >>> 31) == 1) {
@@ -55,7 +54,7 @@ public class RiscV {
                     break;
 
                 case 0x67:    //JALR
-                    imm = instr & 0xfffff000;
+                    imm = instr >> 20;
                     reg[rd] = pc + 4;
                     pc = (imm + reg[rs1]);
                     count = false;
