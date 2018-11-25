@@ -6,14 +6,13 @@ public class RiscV {
     static boolean count;
     static int pc;
     static int reg[] = new int[32];
-    static byte mem[] = new byte[0xffffff];
+    static byte mem[] = new byte[10000000];
     static ArrayList<Integer> progr=new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         System.out.println("Hello RISC-V World!");
         readBinFile("C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\loop.bin");
         pc = 0;
-
         for (;;) {
 
 
