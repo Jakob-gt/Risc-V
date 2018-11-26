@@ -1,6 +1,3 @@
-
-
-
 import java.io.*;
 import java.util.*;
 
@@ -9,11 +6,11 @@ public class RiscV {
     static boolean count;
     static int pc;
     static int reg[] = new int[32];
-    static byte mem[] = new byte[10000000];
+    static byte mem[] = new byte[100000000];
     static ArrayList<Integer> progr=new ArrayList<>();
 
-    static String binfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\test_bgeu.bin";
-    static String resfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\test_bgeu.res";
+    static String binfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\Final_tests\\t1.bin";
+    static String resfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\loop.res";
     static String outputfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\output.res";
 
 
@@ -21,12 +18,11 @@ public class RiscV {
         System.out.println("Hello RISC-V World!");
         readBinFile(binfiledestination);
         pc = 0;
-        reg[2] = 1000000;
+        boolean ECALL = false;
+        instructionsToMem();
 
         for (;;) {
-
-
-            int instr = progr.get(pc/4);
+            int instr = loadInstr(pc);
             int opcode = instr & 0x7f;
 
             int funct3 = (instr >> 12) & 0x07;
@@ -198,7 +194,7 @@ public class RiscV {
                             reg[rd] = reg[rs1] + imm;
                             break;
                         case 0x02:             // SLTI
-                            if (reg[rs1] < imm) {reg[rd]=1;} else {reg[rd]=0;};
+                            if (reg[rs1] < imm) {reg[rd]=1;} else {reg[rd]=0;}
                             break;
                         case 0x03:              // SLTIU
                             long sltiurs1 = reg[rs1];
@@ -294,7 +290,7 @@ public class RiscV {
 
 
                 case 0x73:    //ECALL
-                    pc = 4 * progr.size();
+                    ECALL = true;
                     break;
 
                 default:
@@ -306,7 +302,7 @@ public class RiscV {
                 pc += 4; // We count in 4 byte words
             }
 
-            if (pc / 4 >= progr.size()) {
+            if (ECALL) {
                 break;
             }
 
@@ -318,7 +314,7 @@ public class RiscV {
         }
         writeOutputFile(); //Turn on to write output file
         System.out.println("Program exit");
-        checkOutputfile(outputfiledestination, resfiledestination);
+        //checkOutputfile(outputfiledestination, resfiledestination);
     }
 
 
@@ -389,12 +385,29 @@ public class RiscV {
         resfile.close();
 
         outputarr.set(2,0);
-        boolean err = false;
         if(outputarr.equals(resarr)){
             System.out.println("Correct");
         }
         else
             System.out.println("ERROR");
+    }
+    public static void instructionsToMem() {
+        int index = 3;
+        for(int i = 0; i < progr.size(); i++) {
+            byte tempbyte[] = intToBytes(progr.get(i));
+            for(int j = 0; j < 4; j++){
+                mem[index - j] = tempbyte[j];
+            }
+            index += 4;
+        }
+    }
+    public static int loadInstr(int pc) {
+        int lw1 = mem[pc];
+        int lw2 = mem[pc+1];
+        int lw3 = mem[pc+2];
+        int lw4 = mem[pc+3];
+        int instr = (lw1 & 0x000000ff) + ((lw2 << 8) & 0x0000ff00) + ((lw3 << 16) & 0x00ff0000) + ((lw4 << 24) & 0xff000000);
+        return instr;
     }
 
 }
