@@ -1,3 +1,6 @@
+
+
+
 import java.io.*;
 import java.util.*;
 
@@ -9,10 +12,17 @@ public class RiscV {
     static byte mem[] = new byte[10000000];
     static ArrayList<Integer> progr=new ArrayList<>();
 
+    static String binfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\test_bgeu.bin";
+    static String resfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\test_bgeu.res";
+    static String outputfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\output.res";
+
+
     public static void main(String[] args) throws IOException {
         System.out.println("Hello RISC-V World!");
-        readBinFile("C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\loop.bin");
+        readBinFile(binfiledestination);
         pc = 0;
+        reg[2] = 1000000;
+
         for (;;) {
 
 
@@ -25,6 +35,7 @@ public class RiscV {
             int rs1 = (instr >> 15) & 0x01f;
             int rs2 = (instr >> 20) & 0x01f;
             int imm = 0;
+            reg[0] = 0;
 
             count = true;
 
@@ -179,6 +190,7 @@ public class RiscV {
 
 
                 case 0x13:                    // I-type
+
                     imm = (instr >> 20);
                     switch (funct3) {
 
@@ -306,6 +318,7 @@ public class RiscV {
         }
         writeOutputFile(); //Turn on to write output file
         System.out.println("Program exit");
+        checkOutputfile(outputfiledestination, resfiledestination);
     }
 
 
@@ -343,6 +356,45 @@ public class RiscV {
         conversion[2] = (byte) (number >>> 8);
         conversion[3] = (byte) (number);
         return conversion;
+    }
+
+    public static void checkOutputfile(String outputdest, String resdest)throws IOException {
+        ArrayList<Integer> outputarr=new ArrayList<>();
+        ArrayList<Integer> resarr=new ArrayList<>();
+        DataInputStream outputfile = new DataInputStream(new FileInputStream(outputdest));
+        DataInputStream resfile = new DataInputStream(new FileInputStream(resdest));
+        while(outputfile.available() > 0) {
+            try
+            {
+                int output = outputfile.readInt();
+                output = Integer.reverseBytes(output);
+                outputarr.add(output);
+            }
+            catch(EOFException e) {
+                //just catches the error.. only in loop.bin
+            }
+        }
+        outputfile.close();
+        while(resfile.available() > 0) {
+            try
+            {
+                int res = resfile.readInt();
+                res = Integer.reverseBytes(res);
+                resarr.add(res);
+            }
+            catch(EOFException e) {
+                //just catches the error.. only in loop.bin
+            }
+        }
+        resfile.close();
+
+        outputarr.set(2,0);
+        boolean err = false;
+        if(outputarr.equals(resarr)){
+            System.out.println("Correct");
+        }
+        else
+            System.out.println("ERROR");
     }
 
 }
