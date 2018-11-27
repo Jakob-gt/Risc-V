@@ -9,8 +9,8 @@ public class RiscV {
     static byte mem[] = new byte[100000000];
     static ArrayList<Integer> progr=new ArrayList<>();
 
-    static String binfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\Final_tests\\t1.bin";
-    static String resfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\loop.res";
+    static String binfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\Final_tests\\t14.bin";
+    static String resfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\Testing\\branchmany.res";
     static String outputfiledestination = "C:\\Users\\Jakob\\Dropbox\\DTU\\5_Semester\\Computer_Arkitektur\\Final_Assignment\\output.res";
 
 
@@ -305,13 +305,12 @@ public class RiscV {
             if (ECALL) {
                 break;
             }
-
-            for (int i = 0; i < reg.length; ++i) {
-                System.out.print(reg[i] + " ");
-            }
-            System.out.println(pc);
-
         }
+        for (int i = 0; i < reg.length; ++i) {
+            System.out.print(reg[i] + " ");
+        }
+        System.out.println();
+
         writeOutputFile(); //Turn on to write output file
         System.out.println("Program exit");
         //checkOutputfile(outputfiledestination, resfiledestination);
